@@ -1,11 +1,11 @@
 import { Image, styled } from 'tamagui'
-import oneBallImage from './one-ball.png'
+import appIcon from './app-icon.png'
 
 const LogoImage = styled(Image, {
-  width: 30,
-  height: 30,
+  width: 50,
+  height: 50,
 })
 
 export function Logo() {
-  return <LogoImage src={oneBallImage} />
+  return <LogoImage src={appIcon} />
 }

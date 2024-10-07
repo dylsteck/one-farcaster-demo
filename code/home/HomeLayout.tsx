@@ -53,7 +53,7 @@ function HomeLayoutMouse() {
     <XStack f={1} mah="100vh">
       <YStack
         miw={220}
-        ai="center"
+        ai="flex-start"
         brw={1}
         brc="$borderColor"
         px="$2"
@@ -64,7 +64,8 @@ function HomeLayoutMouse() {
         }}
       >
         <XStack
-          mb="$3"
+          ml="$1"
+          mb="$1"
           $xs={{
             w: '$5',
             h: '$5',

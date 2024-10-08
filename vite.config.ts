@@ -9,10 +9,10 @@ export default {
         deploy: 'vercel',
         defaultRenderMode: 'ssg',
       },
-
       app: {
         key: 'One',
       },
+      deps: { '@tanstack/react-query': true, '@tanstack/react-virtual': true }
     }),
 
     tamaguiPlugin({

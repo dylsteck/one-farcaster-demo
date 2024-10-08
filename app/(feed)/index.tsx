@@ -1,14 +1,26 @@
-import { RefreshControl } from 'react-native'
-import { ScrollView } from 'tamagui'
-import { Stack } from 'one'
-import { FeedCard } from '~/code/feed/FeedCard'
-import { PageContainer } from '~/code/ui/PageContainer'
-import { useFeed } from '~/code/feed/useFeed'
+import { RefreshControl } from 'react-native';
+import { Stack } from 'one';
+import { InfiniteFeed } from '~/code/ui/InfiniteFeed';
+import { PageContainer } from '~/code/ui/PageContainer';
+import { useFeed } from '~/code/feed/useFeed';
+import { FeedCard } from '~/code/feed/FeedCard';
 
-export default () => <FeedPage />
+export default () => <FeedPage />;
 
 function FeedPage() {
-  const { data, isLoading, error, refresh } = useFeed()
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useFeed();
+
+  const handleRefetch = async () => {
+    await refetch();
+  };
 
   return (
     <>
@@ -18,17 +30,20 @@ function FeedPage() {
         }}
       />
       <PageContainer style={{ padding: 0, margin: 0 }}>
-        <ScrollView
-          maxHeight="100%"
-          refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refresh} />}
-          contentContainerStyle={{ padding: 0, margin: 0 }}
-        >
-          {data?.casts.map((cast) => (
-            <FeedCard key={cast.hash} {...cast} />
-          ))}
-          <Stack width="100%" height="100%" borderRightWidth={1} borderColor="gray" />
-        </ScrollView>
+        <InfiniteFeed
+          data={data || []}
+          fetchNextPage={fetchNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+          hasNextPage={hasNextPage}
+          ListHeaderComponent={null}
+          refetch={handleRefetch}
+          isRefetching={isLoading}
+          renderItem={({ item }: { item: any }) => <FeedCard key={item.hash} {...item} />}
+          numColumns={1}
+          alwaysBounceVertical
+          ItemSeparatorComponent={() => <Stack width="100%" height={1} borderColor="gray" />}
+        />
       </PageContainer>
     </>
-  )
+  );
 }

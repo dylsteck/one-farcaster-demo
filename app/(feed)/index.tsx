@@ -17,14 +17,16 @@ function FeedPage() {
           title: 'Feed',
         }}
       />
-      <PageContainer>
+      <PageContainer style={{ padding: 0, margin: 0 }}>
         <ScrollView
           maxHeight="100%"
           refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refresh} />}
+          contentContainerStyle={{ padding: 0, margin: 0 }}
         >
           {data?.casts.map((cast) => (
             <FeedCard key={cast.hash} {...cast} />
           ))}
+          <Stack width="100%" height="100%" borderRightWidth={1} borderColor="gray" />
         </ScrollView>
       </PageContainer>
     </>

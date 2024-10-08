@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.16.0",
+    "@neynar/nodejs-sdk": "^1.58.0",
     "@tamagui/config": "^1.112.23",
     "@tamagui/image-next": "^1.112.23",
     "@tamagui/lucide-icons": "^1.112.23",

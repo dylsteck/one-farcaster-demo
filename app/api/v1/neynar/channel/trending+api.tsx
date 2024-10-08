@@ -1,27 +1,29 @@
 import neynarClient from "~/code/services/neynar";
+import { TimeWindow as NeynarTimeWindow } from "@neynar/nodejs-sdk/build/neynar-api/common/constants";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const searchParams = url.searchParams;
 
-  const query = searchParams.get("q") ?? undefined;
-  const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit") as string) : 20;
-  const cursor = searchParams.get("cursor") ?? undefined;
+  const timeWindowParam = searchParams.get("time_window");
+  let timeWindow: NeynarTimeWindow | undefined;
 
-  if (!query) {
-    return new Response(JSON.stringify({ message: "Query 'q' is required" }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    });
+  if (timeWindowParam === "1d" || timeWindowParam === "7d" || timeWindowParam === "30d") {
+    timeWindow = timeWindowParam as NeynarTimeWindow;
+  } else {
+    timeWindow = undefined;
   }
 
+  const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit") as string) : 10;
+  const cursor = searchParams.get("cursor") ?? undefined;
+
   try {
-    const searchOptions = {
+    const options = {
       limit,
       cursor,
     };
 
-    const res = await neynarClient.searchChannels(query, searchOptions);
+    const res = await neynarClient.fetchTrendingChannels(timeWindow, options);
 
     return new Response(JSON.stringify(res), {
       status: 200,

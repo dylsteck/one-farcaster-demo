@@ -1,27 +1,29 @@
 import neynarClient from "~/code/services/neynar";
 
+type ChannelType = "id" | "parent_url";
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const searchParams = url.searchParams;
 
-  const query = searchParams.get("q") ?? undefined;
-  const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit") as string) : 20;
-  const cursor = searchParams.get("cursor") ?? undefined;
+  const id = searchParams.get("id") ?? undefined;
+  const type = (searchParams.get("type") as ChannelType) ?? "id";
+  const viewerFid = searchParams.get("viewer_fid") ? parseInt(searchParams.get("viewer_fid") as string) : undefined;
 
-  if (!query) {
-    return new Response(JSON.stringify({ message: "Query 'q' is required" }), {
+  if (!id) {
+    return new Response(JSON.stringify({ message: "Channel ID 'id' is required" }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
   }
 
   try {
-    const searchOptions = {
-      limit,
-      cursor,
+    const channelOptions = {
+      viewerFid,
+      type,
     };
 
-    const res = await neynarClient.searchChannels(query, searchOptions);
+    const res = await neynarClient.lookupChannel(id, channelOptions);
 
     return new Response(JSON.stringify(res), {
       status: 200,

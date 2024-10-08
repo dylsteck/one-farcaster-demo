@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from "react";
 
 export const useFeed = () => {
   const [data, setData] = useState<any[]>([]);
@@ -7,8 +7,10 @@ export const useFeed = () => {
   const [isFetchingNextPage, setIsFetchingNextPage] = useState<boolean>(false);
   const [hasNextPage, setHasNextPage] = useState<boolean>(true);
   const [cursor, setCursor] = useState<string>('');
+  const initialFetchDone = useRef(false);
 
   const fetchFeed = async (cursorParam = '') => {
+    if (isLoading || isFetchingNextPage) return;
     try {
       setIsLoading(true);
       const res = await fetch(`/api/v1/neynar/feed/for_you?fid=616&cursor=${cursorParam}`);
@@ -17,10 +19,9 @@ export const useFeed = () => {
         throw new Error(errorData);
       }
       const json = await res.json();
-      console.log('json', json);
       setData((prev) => [...prev, ...json.casts]);
-      setCursor(json.next.cursor || '');
-      setHasNextPage(!!json.next.cursor);
+      setCursor(json.next?.cursor || '');
+      setHasNextPage(!!json.next?.cursor);
     } catch (err) {
       setError(err as Error);
     } finally {
@@ -29,19 +30,24 @@ export const useFeed = () => {
   };
 
   const fetchNextPage = async () => {
-    if (!hasNextPage) return;
+    if (!hasNextPage || isFetchingNextPage || isLoading) return;
     setIsFetchingNextPage(true);
     await fetchFeed(cursor);
     setIsFetchingNextPage(false);
   };
 
   const refetch = async () => {
-    setData([]);
-    await fetchFeed('');
+    if (!isLoading && !isFetchingNextPage) {
+      setData([]);
+      await fetchFeed('');
+    }
   };
 
   useEffect(() => {
-    fetchFeed('');
+    if (!initialFetchDone.current) {
+      fetchFeed('');
+      initialFetchDone.current = true;
+    }
   }, []);
 
   return {

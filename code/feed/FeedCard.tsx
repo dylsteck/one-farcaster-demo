@@ -60,6 +60,7 @@ function timeAgo(isoString: string): string {
 }
 
 export const FeedCard = (props: FeedItem) => {
+  console.log('feed card', props)
   const { author, text, timestamp, reactions, replies, embeds } = props
 
   const content = (

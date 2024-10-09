@@ -96,7 +96,7 @@ function NavLinks() {
   return (
     <>
       <SideMenuLink href="/" subPaths={['/post/']} Icon={HomeIcons.Home}>
-        Feed
+        For You
       </SideMenuLink>
 
       <SideMenuLink href="/notifications" Icon={HomeIcons.Notifications}>

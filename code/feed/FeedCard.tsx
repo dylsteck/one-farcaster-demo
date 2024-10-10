@@ -19,6 +19,12 @@ type FeedItem = {
   replies: {
     count: number
   }
+  channel: {
+    object: "channel_dehydrated"
+    id: string
+    name: string
+    image_url: string
+  } | null;
   embeds: Array<{
     url: string
     metadata: {
@@ -60,18 +66,33 @@ function timeAgo(isoString: string): string {
 }
 
 export const FeedCard = (props: FeedItem) => {
-  console.log('feed card', props)
-  const { author, text, timestamp, reactions, replies, embeds } = props
+  const { author, channel, text, timestamp, reactions, replies, embeds } = props
 
   const content = (
-    <Card tag="a" padding="$4" margin="$2" style={{ overflow: 'hidden' }}>
+    <Card tag="a" padding="$4" paddingLeft="$3" margin="$2" marginLeft="$0" style={{ overflow: 'hidden' }}>
       <XStack>
         <Image width={40} height={40} br={20} src={author.pfp_url} />
-        <YStack f={1} ml="$3">
+        <YStack f={1} ml="$2">
           <Paragraph size="$5">
             <XStack alignItems="center" space="$2">
-              <Paragraph fontWeight="bold">{author.display_name}</Paragraph>
-              <Paragraph>{timeAgo(timestamp)}</Paragraph>
+              <Paragraph fontWeight="bold">{author.username}</Paragraph>
+              {channel && (
+                <>
+                  <Paragraph paddingRight="$2">in</Paragraph>
+                  <XStack
+                    alignItems="center"
+                    space="$1"
+                    backgroundColor="#342942"
+                    paddingHorizontal="$2"
+                    paddingVertical="$1"
+                    borderRadius="$10"
+                  >
+                    <Image width={16} height={16} br={8} src={channel.image_url} />
+                    <Paragraph paddingLeft="$1" color="white">{channel.id}</Paragraph>
+                  </XStack>
+                </>
+              )}
+              <Paragraph marginLeft={channel ? "0" : "$3"}>{timeAgo(timestamp)}</Paragraph>
             </XStack>
           </Paragraph>
           <Paragraph

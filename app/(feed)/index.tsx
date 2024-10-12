@@ -34,20 +34,13 @@ function FeedPage() {
       <PageContainer style={{ padding: 0, margin: 0 }}>
         <InfiniteFeed
           data={data}
-          fetchNextPage={fetchNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-          hasNextPage={hasNextPage}
-          ListHeaderComponent={null}
-          refetch={handleRefetch}
-          isRefetching={isLoading}
+          fetchMore={fetchNextPage}
+          isLoading={isFetchingNextPage}
+          hasMore={hasNextPage}
           renderItem={({ item }: { item: any }) => (
             <FeedCard key={item.hash} {...item} />
           )}
-          numColumns={1}
-          alwaysBounceVertical
-          ItemSeparatorComponent={() => (
-            <Stack width="100%" height={1} borderColor="gray" />
-          )}
+          refetch={handleRefetch}
         />
       </PageContainer>
     </>

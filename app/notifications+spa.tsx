@@ -29,7 +29,7 @@ function NotificationsPage() {
     <>
       <Stack.Screen
         options={{
-          title: "Feed",
+          title: "Notifications",
         }}
       />
       <PageContainer style={{ padding: 0, margin: 0 }}>

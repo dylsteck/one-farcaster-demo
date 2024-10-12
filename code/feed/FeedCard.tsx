@@ -2,6 +2,7 @@ import { Heart, Repeat, Reply } from '@tamagui/lucide-icons'
 import { Paragraph, SizableText, XStack, YStack } from 'tamagui'
 import { Card } from '../ui/Card'
 import { Image } from '../ui/Image'
+import { useWindowDimensions } from 'react-native'
 
 type FeedItem = {
   hash: string
@@ -32,8 +33,8 @@ type FeedItem = {
       html?: object
       content_type?: string
       image?: {
-        width_px: number
-        height_px: number
+        width_px?: number
+        height_px?: number
       }
       video?: {
         streams: Array<{
@@ -67,11 +68,13 @@ function timeAgo(isoString: string): string {
 
 export const FeedCard = (props: FeedItem) => {
   const { author, channel, text, timestamp, reactions, replies, embeds } = props
+  const { width } = useWindowDimensions()
   const filteredText = embeds?.reduce((acc, embed) => {
     return acc.replace(embed.url, '');
   }, text);
+  
   return (
-    <Card tag="a" padding="$4" margin="$2" marginLeft="$0" style={{ overflow: 'hidden' }}>
+    <Card tag="a" padding="$4" margin="$2" marginLeft="$0" style={{ overflow: 'hidden', width: width - 40 }}>
       <XStack alignItems="flex-start" space="$4" width="100%">
         <Image width={40} height={40} borderRadius={20} src={author.pfp_url} />
         <YStack flex={1} space="$2" width="100%">
@@ -90,7 +93,7 @@ export const FeedCard = (props: FeedItem) => {
                   flexShrink={1}
                 >
                   <Image width={16} height={16} borderRadius={8} src={channel.image_url} />
-                  <Paragraph paddingLeft="$1" color="white" numberOfLines={1}>{channel.id}</Paragraph>
+                  <Paragraph paddingLeft="$1" color="$color10" numberOfLines={1}>{channel.id}</Paragraph>
                 </XStack>
               </>
             )}
@@ -106,14 +109,16 @@ export const FeedCard = (props: FeedItem) => {
           <YStack space="$2" width="100%">
             {embeds?.map((embed, index) => {
               if (embed.metadata?.content_type?.startsWith('image')) {
+                const { width_px = 200, height_px = 150 } = embed.metadata.image || {};
                 return (
                   <Image
                     key={index}
                     src={embed.url}
-                    width="100%"
-                    height={200}
-                    resizeMode="contain"
+                    width={width_px}
+                    height={height_px}
+                    resizeMode="cover"
                     borderRadius={10}
+                    style={{ maxWidth: '100%' }}
                   />
                 )
               }
@@ -134,20 +139,27 @@ export const FeedCard = (props: FeedItem) => {
                 if(embed.metadata._status && embed.metadata._status === "RESOLVED"){
                   const imageUrl = (embed.metadata.html as any).ogImage?.[0]?.url || (embed.metadata.html as any).twitterImage?.[0]?.url || "";
                   const siteTitle = (embed.metadata.html as any).ogTitle || (embed.metadata.html as any).twitterTitle || (embed.metadata.html as any).alAndroidAppName || (embed.metadata.html as any).alIphoneAppName || "";
+                  const siteDomain = new URL(embed.url).hostname;
                   return(
-                    <YStack
+                    <XStack
                       key={index}
                       space="$2"
-                      padding="$3"
-                      backgroundColor="#342942"
+                      borderColor="$color10"
+                      borderWidth={1}
                       borderRadius="$3"
                       width="100%"
+                      overflow="hidden"
                     >
-                      <Image width="100%" height={120} borderRadius={8} src={imageUrl} resizeMode="cover" />
-                      <Paragraph color="white" fontWeight="bold" numberOfLines={2}>
-                        {siteTitle}
-                      </Paragraph>
-                    </YStack>
+                      <Image width={120} height={120} src={imageUrl} resizeMode="cover" />
+                      <YStack flex={1} padding="$3" justifyContent="space-between">
+                        <Paragraph color="$color10" fontWeight="bold" numberOfLines={2}>
+                          {siteTitle}
+                        </Paragraph>
+                        <Paragraph color="#666" fontSize={12} numberOfLines={1}>
+                          {siteDomain}
+                        </Paragraph>
+                      </YStack>
+                    </XStack>
                   )
                 } else {
                   return(
@@ -156,11 +168,12 @@ export const FeedCard = (props: FeedItem) => {
                       alignItems="center"
                       space="$2"
                       padding="$3"
-                      backgroundColor="#342942"
+                      borderColor="$color10"
+                      borderWidth={1}
                       borderRadius="$3"
                       width="100%"
                     >
-                      <Paragraph color="white" numberOfLines={1} flex={1}>{embed.url}</Paragraph>
+                      <Paragraph color="$color10" numberOfLines={1} flex={1}>{embed.url}</Paragraph>
                     </XStack>
                   )
                 }
@@ -172,11 +185,12 @@ export const FeedCard = (props: FeedItem) => {
                     alignItems="center"
                     space="$2"
                     padding="$3"
-                    backgroundColor="#342942"
+                    borderColor="$color10"
+                    borderWidth={1}
                     borderRadius="$3"
                     width="100%"
                   >
-                    <Paragraph color="white" numberOfLines={1} flex={1}>{embed.url}</Paragraph>
+                    <Paragraph color="$color10" numberOfLines={1} flex={1}>{embed.url}</Paragraph>
                   </XStack>
                 )
               }

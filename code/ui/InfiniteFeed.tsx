@@ -1,54 +1,58 @@
-import { Spinner, View } from "tamagui";
-import { InfiniteScrollList } from "./InfiniteScrollList";
-import { type ReactElement } from "react";
+import React, { useState, useEffect, useCallback } from 'react';
+import { FlatList, ActivityIndicator, Platform, RefreshControl } from 'react-native';
+import { View } from 'react-native';
 
-export const InfiniteFeed = ({
+interface InfiniteScrollListProps {
+  data: any[];
+  fetchMore: () => void;
+  isLoading: boolean;
+  hasMore: boolean;
+  renderItem: ({ item }: { item: any }) => React.ReactNode;
+  refetch: () => void;
+}
+
+const InfiniteScrollList: React.FC<InfiniteScrollListProps> = ({
   data,
-  fetchNextPage,
-  isFetchingNextPage,
-  hasNextPage,
-  ListHeaderComponent,
-  refetch,
-  isRefetching,
-  paddingTop,
-  paddingBottom,
-  asTabs,
+  fetchMore,
+  isLoading,
+  hasMore,
   renderItem,
-  numColumns,
-  ItemSeparatorComponent,
-  alwaysBounceVertical,
-}: {
-  data: unknown[];
-  fetchNextPage?: () => void;
-  isFetchingNextPage?: boolean;
-  hasNextPage?: boolean;
-  ListHeaderComponent?: ReactElement;
-  refetch?: () => Promise<void>;
-  isRefetching?: boolean;
-  paddingTop?: number;
-  paddingBottom?: number;
-  asTabs?: boolean;
-  renderItem: ({ item }: { item: unknown }) => ReactElement;
-  numColumns?: number;
-  ItemSeparatorComponent?: () => ReactElement;
-  alwaysBounceVertical?: boolean;
+  refetch,
 }) => {
+  const [isFetching, setIsFetching] = useState(false);
+
+  const handleEndReached = () => {
+    if (!isLoading && hasMore && Platform.OS !== 'web') {
+      setIsFetching(true);
+      fetchMore();
+    }
+  };
+
+  useEffect(() => {
+    if (!isLoading) {
+      setIsFetching(false);
+    }
+  }, [isLoading]);
+
   return (
-    <InfiniteScrollList
+    <FlatList
       data={data}
       renderItem={renderItem}
-      onEndReached={fetchNextPage}
-      ListFooterComponent={
-        isFetchingNextPage ? (
-          <View marginVertical="$3">
-            <Spinner />
-          </View>
-        ) : null
+      keyExtractor={(item, index) => `${item.id}-${index}`}
+      onEndReached={Platform.OS !== 'web' ? handleEndReached : undefined}
+      ListFooterComponent={() =>
+        isFetching && <ActivityIndicator size="large" color="#0000ff" />
       }
-      ListHeaderComponent={ListHeaderComponent}
-      numColumns={numColumns}
-      ItemSeparatorComponent={ItemSeparatorComponent}
-      alwaysBounceVertical={alwaysBounceVertical}
+      ListFooterComponentStyle={{ paddingVertical: 20 }}
+      refreshControl={
+        <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+      }
     />
   );
 };
+
+const InfiniteFeed: React.FC<InfiniteScrollListProps> = (props) => {
+  return <InfiniteScrollList {...props} />;
+};
+
+export { InfiniteFeed };

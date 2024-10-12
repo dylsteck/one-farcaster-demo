@@ -10,6 +10,7 @@
     "prebuild:native": "one prebuild",
     "build:web": "one build",
     "serve": "one serve",
+    "serve:vercel": "one serve --platform vercel",
     "ios": "EXPO_NO_TELEMETRY=true expo run:ios",
     "android": "EXPO_NO_TELEMETRY=true expo run:android",
     "upgrade:tamagui": "yarn up '*tamagui*' '@tamagui/*'",

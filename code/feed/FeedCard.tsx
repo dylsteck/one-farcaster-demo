@@ -28,6 +28,8 @@ type FeedItem = {
   embeds: Array<{
     url: string
     metadata: {
+      _status?: string
+      html?: object
       content_type?: string
       image?: {
         width_px: number
@@ -48,12 +50,10 @@ type FeedItem = {
 function timeAgo(isoString: string): string {
   const now = new Date();
   const timestamp = new Date(isoString);
-
   const seconds = Math.floor((now.getTime() - timestamp.getTime()) / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
-
   if (seconds < 60) {
     return `${seconds}s`;
   } else if (minutes < 60) {
@@ -67,75 +67,123 @@ function timeAgo(isoString: string): string {
 
 export const FeedCard = (props: FeedItem) => {
   const { author, channel, text, timestamp, reactions, replies, embeds } = props
-
-  const content = (
-    <Card tag="a" padding="$4" paddingLeft="$3" margin="$2" marginLeft="$0" style={{ overflow: 'hidden' }}>
-      <XStack>
-        <Image width={40} height={40} br={20} src={author.pfp_url} />
-        <YStack f={1} ml="$2">
-          <Paragraph size="$5">
-            <XStack alignItems="center" space="$2">
-              <Paragraph fontWeight="bold">{author.username}</Paragraph>
-              {channel && (
-                <>
-                  <Paragraph paddingRight="$2">in</Paragraph>
-                  <XStack
-                    alignItems="center"
-                    space="$1"
-                    backgroundColor="#342942"
-                    paddingHorizontal="$2"
-                    paddingVertical="$1"
-                    borderRadius="$10"
-                  >
-                    <Image width={16} height={16} br={8} src={channel.image_url} />
-                    <Paragraph paddingLeft="$1" color="white">{channel.id}</Paragraph>
-                  </XStack>
-                </>
-              )}
-              <Paragraph marginLeft={channel ? "0" : "$3"}>{timeAgo(timestamp)}</Paragraph>
-            </XStack>
-          </Paragraph>
+  const filteredText = embeds?.reduce((acc, embed) => {
+    return acc.replace(embed.url, '');
+  }, text);
+  return (
+    <Card tag="a" padding="$4" margin="$2" marginLeft="$0" style={{ overflow: 'hidden' }}>
+      <XStack alignItems="flex-start" space="$4" width="100%">
+        <Image width={40} height={40} borderRadius={20} src={author.pfp_url} />
+        <YStack flex={1} space="$2" width="100%">
+          <XStack alignItems="center" space="$2" flexWrap="wrap" width="100%">
+            <Paragraph fontWeight="bold" numberOfLines={1}>{author.username}</Paragraph>
+            {channel && (
+              <>
+                <Paragraph numberOfLines={1}>in</Paragraph>
+                <XStack
+                  alignItems="center"
+                  space="$1"
+                  backgroundColor="#342942"
+                  paddingHorizontal="$2"
+                  paddingVertical="$1"
+                  borderRadius="$10"
+                  flexShrink={1}
+                >
+                  <Image width={16} height={16} borderRadius={8} src={channel.image_url} />
+                  <Paragraph paddingLeft="$1" color="white" numberOfLines={1}>{channel.id}</Paragraph>
+                </XStack>
+              </>
+            )}
+            <Paragraph numberOfLines={1}>{timeAgo(timestamp)}</Paragraph>
+          </XStack>
           <Paragraph
             size="$4"
-            whiteSpace="pre-wrap"
-            maxWidth="100%"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            wordBreak="break-word"
-            style={{ paddingRight: 10 }}
+            numberOfLines={10}
+            ellipsizeMode="tail"
           >
-            {text}
+            {filteredText}
           </Paragraph>
-          {embeds?.map((embed, index) => {
-            if (embed.metadata?.content_type?.startsWith('image')) {
-              return (
-                <Image
-                  key={index}
-                  src={embed.url}
-                  width="100%"
-                  height={200}
-                  mt="$2"
-                  style={{ objectFit: 'contain', maxWidth: '100%' }}
-                />
-              )
-            }
-            if (embed.metadata?.content_type?.startsWith('video')) {
-              return (
-                <video
-                  key={index}
-                  controls
-                  width="100%"
-                  height={200}
-                  mt="$2"
-                  style={{ maxWidth: '100%' }}
-                >
-                  <source src={embed.url} type={embed.metadata.content_type} />
-                </video>
-              )
-            }
-            return null
-          })}
-          <XStack mt="$2" jc="flex-start" px="$1" gap="$5">
+          <YStack space="$2" width="100%">
+            {embeds?.map((embed, index) => {
+              if (embed.metadata?.content_type?.startsWith('image')) {
+                return (
+                  <Image
+                    key={index}
+                    src={embed.url}
+                    width="100%"
+                    height={200}
+                    resizeMode="contain"
+                    borderRadius={10}
+                  />
+                )
+              }
+              if (embed.metadata?.content_type?.startsWith('video')) {
+                return (
+                  <video
+                    key={index}
+                    controls
+                    width="100%"
+                    height={200}
+                    style={{ borderRadius: 10, objectFit: 'cover' }}
+                  >
+                    <source src={embed.url} type={embed.metadata.content_type} />
+                  </video>
+                )
+              }
+              if (embed.metadata?.content_type?.startsWith('text/html')) {
+                if(embed.metadata._status && embed.metadata._status === "RESOLVED"){
+                  const imageUrl = (embed.metadata.html as any).ogImage?.[0]?.url || (embed.metadata.html as any).twitterImage?.[0]?.url || "";
+                  const siteTitle = (embed.metadata.html as any).ogTitle || (embed.metadata.html as any).twitterTitle || (embed.metadata.html as any).alAndroidAppName || (embed.metadata.html as any).alIphoneAppName || "";
+                  return(
+                    <YStack
+                      key={index}
+                      space="$2"
+                      padding="$3"
+                      backgroundColor="#342942"
+                      borderRadius="$3"
+                      width="100%"
+                    >
+                      <Image width="100%" height={120} borderRadius={8} src={imageUrl} resizeMode="cover" />
+                      <Paragraph color="white" fontWeight="bold" numberOfLines={2}>
+                        {siteTitle}
+                      </Paragraph>
+                    </YStack>
+                  )
+                } else {
+                  return(
+                    <XStack
+                      key={index}
+                      alignItems="center"
+                      space="$2"
+                      padding="$3"
+                      backgroundColor="#342942"
+                      borderRadius="$3"
+                      width="100%"
+                    >
+                      <Paragraph color="white" numberOfLines={1} flex={1}>{embed.url}</Paragraph>
+                    </XStack>
+                  )
+                }
+              }
+              else if(!embed.metadata?.content_type && embed.url){
+                return(
+                  <XStack
+                    key={index}
+                    alignItems="center"
+                    space="$2"
+                    padding="$3"
+                    backgroundColor="#342942"
+                    borderRadius="$3"
+                    width="100%"
+                  >
+                    <Paragraph color="white" numberOfLines={1} flex={1}>{embed.url}</Paragraph>
+                  </XStack>
+                )
+              }
+              return null
+            })}
+          </YStack>
+          <XStack justifyContent="flex-start" space="$5">
             <StatItem Icon={Reply} count={replies.count} />
             <StatItem Icon={Repeat} count={reactions.recasts_count} />
             <StatItem Icon={Heart} count={reactions.likes_count} />
@@ -144,15 +192,13 @@ export const FeedCard = (props: FeedItem) => {
       </XStack>
     </Card>
   )
-
-  return content
 }
 
 const StatItem = ({ Icon, count }: { Icon: any; count: number }) => {
   return (
-    <XStack ai="center" jc="flex-start" gap="$2">
+    <XStack alignItems="center" justifyContent="flex-start" space="$2">
       <Icon color="$color10" size={14} />
-      <SizableText fow="700" color="$color10" userSelect="none">
+      <SizableText fontWeight="700" color="$color10" userSelect="none">
         {count}
       </SizableText>
     </XStack>

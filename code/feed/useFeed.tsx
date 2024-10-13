@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { PROD_URL } from "../services/utils";
 
 export const useFeed = () => {
   const [data, setData] = useState<any[]>([]);
@@ -13,7 +14,7 @@ export const useFeed = () => {
     if (isLoading || isFetchingNextPage) return;
     try {
       setIsLoading(true);
-      const res = await fetch(`/api/v1/neynar/feed/for_you?fid=616&cursor=${cursorParam}`);
+      const res = await fetch(`${PROD_URL}/api/v1/neynar/feed/for_you?fid=616&cursor=${cursorParam}`);
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData);

@@ -3,11 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "index.js",
   "scripts": {
     "dev": "one dev",
     "dev:clean": "one dev --clean",
-    "dev:vercel": "vercel dev",
     "clean": "one clean",
     "prebuild:native": "one prebuild",
     "build": "one build",

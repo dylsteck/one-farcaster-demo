@@ -1,0 +1,1 @@
+export const PROD_URL = "https://cortex-web.up.railway.app";

@@ -74,15 +74,15 @@ export const FeedCard = (props: FeedItem) => {
   }, text);
   
   return (
-    <Card tag="a" padding="$4" margin="$2" marginLeft="$0" style={{ overflow: 'hidden', width: width - 40 }}>
-      <XStack alignItems="flex-start" space="$4" width="100%">
-        <Image width={40} height={40} borderRadius={20} src={author.pfp_url} />
-        <YStack flex={1} space="$2" width="100%">
-          <XStack alignItems="center" space="$2" flexWrap="wrap" width="100%">
-            <Paragraph fontWeight="bold" numberOfLines={1}>{author.username}</Paragraph>
+    <Card tag="a" padding="$4" margin="$2" marginTop="$0" marginLeft="$0" style={{ overflow: 'hidden', width: width - 40 }}>
+      <XStack alignItems="flex-start" space="$2" width="100%">
+        <Image width={30} height={30} borderRadius={20} src={author.pfp_url} />
+        <YStack flex={1} space="$2" paddingTop="$0" width="100%">
+          <XStack alignItems="center" space="$1" flexWrap="wrap" width="100%">
+            <Paragraph fontWeight="bold" numberOfLines={1} paddingRight="$1">{author.username}</Paragraph>
             {channel && (
               <>
-                <Paragraph numberOfLines={1}>in</Paragraph>
+                <Paragraph numberOfLines={1} paddingRight="$1">in</Paragraph>
                 <XStack
                   alignItems="center"
                   space="$1"
@@ -93,7 +93,7 @@ export const FeedCard = (props: FeedItem) => {
                   flexShrink={1}
                 >
                   <Image width={16} height={16} borderRadius={8} src={channel.image_url} />
-                  <Paragraph paddingLeft="$1" color="$color10" numberOfLines={1}>{channel.id}</Paragraph>
+                  <Paragraph paddingLeft="$1" numberOfLines={1} color="white">{channel.id}</Paragraph>
                 </XStack>
               </>
             )}
@@ -143,6 +143,8 @@ export const FeedCard = (props: FeedItem) => {
                   return(
                     <XStack
                       key={index}
+                      paddingTop="$0"
+                      marginTop="$0"
                       space="$2"
                       borderColor="$color10"
                       borderWidth={1}
@@ -150,12 +152,12 @@ export const FeedCard = (props: FeedItem) => {
                       width="100%"
                       overflow="hidden"
                     >
-                      <Image width={120} height={120} src={imageUrl} resizeMode="cover" />
+                      <Image width={120} height={120} src={imageUrl} />
                       <YStack flex={1} padding="$3" justifyContent="space-between">
-                        <Paragraph color="$color10" fontWeight="bold" numberOfLines={2}>
+                        <Paragraph fontWeight="bold" numberOfLines={2}>
                           {siteTitle}
                         </Paragraph>
-                        <Paragraph color="#666" fontSize={12} numberOfLines={1}>
+                        <Paragraph fontSize={12} numberOfLines={1}>
                           {siteDomain}
                         </Paragraph>
                       </YStack>

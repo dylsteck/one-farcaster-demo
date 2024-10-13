@@ -1,7 +1,10 @@
 import neynarClient from "~/code/services/neynar";
 import { ForYouProvider } from "@neynar/nodejs-sdk/build/neynar-api/v2/openapi-farcaster/models/for-you-provider";
+import mockForYou from "~/code/api/mock/for_you.json";
+import { setupCors } from "~/code/api/cors";
 
 export async function GET(request: Request) {
+  setupCors(request);
   const url = new URL(request.url);
   const searchParams = url.searchParams;
 
@@ -28,7 +31,8 @@ export async function GET(request: Request) {
       providerMetadata,
     };
 
-    const res = await neynarClient.fetchFeedForYou(fid, feedOptions);
+    // const res = await neynarClient.fetchFeedForYou(fid, feedOptions);
+    const res = mockForYou;
 
     return new Response(JSON.stringify(res), {
       status: 200,

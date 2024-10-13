@@ -1,8 +1,11 @@
 import neynarClient from "~/code/services/neynar";
+import mockNotifications from "~/code/api/mock/notifications.json";
+import { setupCors } from "~/code/api/cors";
 
 type NotificationType = "follows" | "recasts" | "likes" | "mentions" | "replies";
 
 export async function GET(request: Request) {
+  setupCors(request);
   const url = new URL(request.url);
   const searchParams = url.searchParams;
 
@@ -25,7 +28,8 @@ export async function GET(request: Request) {
       priorityMode,
     };
 
-    const res = await neynarClient.fetchAllNotifications(fid, notificationOptions);
+    //const res = await neynarClient.fetchAllNotifications(fid, notificationOptions);
+    const res = mockNotifications;
 
     return new Response(JSON.stringify(res), {
       status: 200,

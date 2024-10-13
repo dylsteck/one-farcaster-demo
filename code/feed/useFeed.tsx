@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { PROD_URL } from "../services/utils";
+import { PROD_URL } from "../api/utils";
 
 export const useFeed = () => {
   const [data, setData] = useState<any[]>([]);

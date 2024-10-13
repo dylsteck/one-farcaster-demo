@@ -10,7 +10,6 @@ function isValidOrigin(origin?: string | null): origin is string {
     );
 }
 
-
 export const setupCors = (req: Request) => {
     const origin = req.headers.get('origin');
     if (isValidOrigin(origin)) {

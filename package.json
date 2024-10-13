@@ -3,12 +3,16 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "main": "index.js",
   "scripts": {
     "dev": "one dev",
     "dev:clean": "one dev --clean",
+    "dev:vercel": "vercel dev",
     "clean": "one clean",
     "prebuild:native": "one prebuild",
-    "build:web": "one build",
+    "build": "one build",
+    "build:web": "one build web",
+    "prod": "one build && one serve",
     "serve": "one serve",
     "serve:vercel": "one serve --platform vercel",
     "ios": "EXPO_NO_TELEMETRY=true expo run:ios",
@@ -38,7 +42,7 @@
     "drizzle-orm": "^0.33.0",
     "expo": "~51.0.36",
     "expo-modules-core": "^1.12.25",
-    "one": "1.1.297",
+    "one": "1.1.307",
     "postgres": "^3.4.4",
     "react": "^18.3.1",
     "react-native": "0.74.1",
@@ -54,6 +58,10 @@
     "@tamagui/vite-plugin": "^1.112.23",
     "@tanstack/eslint-plugin-query": "^5.59.2",
     "tsx": "^4.19.1",
+    "vercel": "^37.8.0",
     "vite": "6.0.0-beta.1"
+  },
+  "engines": {
+    "node": ">=19.9.0"
   }
 }

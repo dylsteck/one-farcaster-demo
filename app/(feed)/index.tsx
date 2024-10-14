@@ -31,7 +31,16 @@ function FeedPage() {
           title: "Feed",
         }}
       />
-      <PageContainer style={{ padding: 0, margin: 0 }}>
+      <PageContainer
+        padding={0}
+        margin={0}
+        maxWidth="60%"
+        borderRightWidth={1}
+        borderRightColor="$borderColor"
+        $sm={{
+          maxWidth: "100%",
+        }}
+      >
         <InfiniteFeed
           data={data}
           fetchMore={fetchNextPage}

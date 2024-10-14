@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Heart, Repeat, Reply } from '@tamagui/lucide-icons';
+import { Heart, MessageCircle, Repeat } from '@tamagui/lucide-icons';
 import { Paragraph, SizableText, XStack, YStack } from 'tamagui';
 import { Card } from '../ui/Card';
 import { Image } from '../ui/Image';
@@ -177,7 +177,7 @@ export const FeedCard = React.memo((props: FeedItem) => {
   }, [limitedEmbeds, width]);
 
   return (
-    <Card padding="$4" margin="$2" marginTop="$0" marginLeft="$0" style={{ overflow: 'hidden', width: width - 40 }}>
+    <Card padding="$4" paddingTop="$2" margin="$2" marginTop="$0" marginLeft="$0" style={{ overflow: 'hidden', width: width - 40 }}>
       <XStack alignItems="flex-start" space="$2" width="100%">
         <Image width={30} height={30} borderRadius={20} src={author.pfp_url} />
         <YStack flex={1} space="$2" paddingTop="$0" width="100%">
@@ -231,24 +231,33 @@ export const FeedCard = React.memo((props: FeedItem) => {
           <YStack space="$2" width="100%">
             {renderEmbeds}
           </YStack>
-          <XStack justifyContent="flex-start" space="$5">
-            <StatItem Icon={Reply} count={replies.count} />
-            <StatItem Icon={Repeat} count={reactions.recasts_count} />
-            <StatItem Icon={Heart} count={reactions.likes_count} />
+          <XStack ai="flex-start" jc="flex-start" space="$5" mt="$2">
+            <MessageCircle color="$color10" size={18} />
+            <Repeat color="$color10" size={18} />
+            <Heart color="$color10" size={18} />
+          </XStack>
+          <XStack ai="center" jc="flex-start" space="$2.5" mt="$2">
+            {(() => {
+              const counts = [
+                { label: replies.count > 1 ? 'replies' : 'reply', count: replies.count },
+                { label: reactions.recasts_count > 1 ? 'recasts' : 'recast', count: reactions.recasts_count },
+                { label: reactions.likes_count > 1 ? 'likes' : 'like', count: reactions.likes_count },
+              ]
+                .filter((item) => item.count > 0)
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 2)
+
+              return counts.map((item, index) => (
+                <XStack key={index} ai="center">
+                  <Paragraph fontWeight="bold">{item.count}</Paragraph>
+                  <Paragraph pl="$1.5">{item.label}</Paragraph>
+                  {index === 0 && counts.length > 1 && <Paragraph ml={index !== 0 ? '0' : '$2.5'}>·</Paragraph>}
+                </XStack>
+              ))
+            })()}
           </XStack>
         </YStack>
       </XStack>
     </Card>
   );
 });
-
-const StatItem = ({ Icon, count }: { Icon: any; count: number }) => {
-  return (
-    <XStack alignItems="center" justifyContent="flex-start" space="$2">
-      <Icon color="$color10" size={14} />
-      <SizableText fontWeight="700" color="$color10" userSelect="none">
-        {count}
-      </SizableText>
-    </XStack>
-  );
-};

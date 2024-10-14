@@ -8,7 +8,7 @@ import {
   type ViewProps,
   XStack,
   YStack,
-  SizableText,
+  useMedia,
 } from 'tamagui'
 import { type Href, Link, Slot, usePathname } from 'one'
 import { Logo } from '../brand/Logo'
@@ -20,9 +20,11 @@ const Context = createStyledContext({
 })
 
 export function HomeLayout() {
+  const media = useMedia()
+
   return (
     <Context.Provider isVertical={isTouchable}>
-      {isTouchable ? <HomeLayoutTouch /> : <HomeLayoutMouse />}
+      {isTouchable || media.sm ? <HomeLayoutTouch /> : <HomeLayoutMouse />}
     </Context.Provider>
   )
 }
@@ -32,7 +34,6 @@ function HomeLayoutTouch() {
     <YStack f={1}>
       <XStack ai="center" jc="space-between" py="$1" px="$4" bbc="$borderColor" bbw={1}>
         <Logo />
-        <ToggleThemeLink f={0} />
       </XStack>
 
       <YStack f={1}>
@@ -41,7 +42,21 @@ function HomeLayoutTouch() {
         </ScrollView>
       </YStack>
 
-      <XStack ai="center" jc="space-around" btw={1} btc="$borderColor" py="$1" gap="$1">
+      <XStack
+        ai="center"
+        jc="space-between"
+        btw={1}
+        btc="$borderColor"
+        py="$1"
+        gap="$1"
+        position="fixed"
+        bottom={0}
+        left={0}
+        right={0}
+        zIndex={1}
+        backgroundColor="$background"
+        px="$4"
+      >
         <NavLinks />
       </XStack>
     </YStack>
@@ -52,39 +67,30 @@ function HomeLayoutMouse() {
   return (
     <XStack f={1} mah="100vh">
       <YStack
-        miw={220}
-        ai="flex-end"
+        ai="flex-start"
         brw={1}
         brc="$borderColor"
-        px="$2"
-        py="$4"
+        pl="$12"
+        pr="$3"
+        py="$0"
         gap="$1"
-        $xs={{
-          miw: 'auto',
+        $sm={{
+          display: 'none',
         }}
       >
-        <YStack
-          ml="$1"
-          mb="$1"
-          $xs={{
-            w: '$5',
-            h: '$5',
-            ai: 'center',
-            jc: 'center',
-          }}
-        >
+        <YStack>
           <Logo />
           <NavLinks />
         </YStack>
 
         <View flex={1} />
 
-        <YStack ai="flex-end">
+        <YStack ai="flex-start">
           <ToggleThemeLink f={0} />
         </YStack>
       </YStack>
 
-      <YStack f={1}>
+      <YStack f={7} maw="100%" $sm={{ f: 1 }}>
         <ScrollView>
           <Slot />
         </ScrollView>

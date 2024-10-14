@@ -11,16 +11,7 @@ type Notification = {
         pfp_url: string | null
       }
     }>
-    cast?: {
-      reactions: {
-        likes: Array<{
-          fname: string
-        }>
-      }
-      author: {
-        username: string
-      }
-    }
+    cast: any
     reactions?: Array<{
       user: {
         username: string
@@ -69,7 +60,7 @@ export const NotificationCard = ({ key, notification }: { key: string, notificat
       return (
         <Card p="$3" backgroundColor="$background" borderRadius="$4" elevation="$2">
           {notification.cast && notification.cast.reactions.likes.length > 0 && (
-            <>
+            <YStack>
               {notification.cast.reactions.likes.length === 1 ? (
                 <Paragraph>
                   <Text fontWeight="bold">
@@ -86,7 +77,10 @@ export const NotificationCard = ({ key, notification }: { key: string, notificat
                   liked your cast
                 </Paragraph>
               )}
-            </>
+              <Paragraph width="100%" wordWrap="break-word">
+                {notification.cast.text}
+              </Paragraph>
+            </YStack>
           )}
         </Card>
       )
@@ -100,7 +94,7 @@ export const NotificationCard = ({ key, notification }: { key: string, notificat
       )
     case 'recasts':
       return (
-        <Card p="$3" backgroundColor="$background" borderRadius="$4" elevation="$2">
+        <YStack p="$3" backgroundColor="$background" borderRadius="$4" elevation="$2">
           {notification.reactions && notification.reactions.length > 0 && (
             <>
               {notification.reactions.length === 1 ? (
@@ -117,18 +111,24 @@ export const NotificationCard = ({ key, notification }: { key: string, notificat
                   recasted your cast
                 </Paragraph>
               )}
+              <Paragraph width="100%" wordWrap="break-word">
+                {notification.cast.text}
+              </Paragraph>
             </>
           )}
-        </Card>
+        </YStack>
       )
     case 'reply':
       return (
-        <Card p="$3" backgroundColor="$background" borderRadius="$4" elevation="$2">
+        <YStack p="$3" backgroundColor="$background" borderRadius="$4" elevation="$2">
           <Paragraph>
             <Text fontWeight="bold">{notification.cast?.author.username}</Text> replied to your
             cast
           </Paragraph>
-        </Card>
+          <Paragraph width="100%" wordWrap="break-word">
+              {notification.cast.text}
+          </Paragraph>
+        </YStack>
       )
     default:
       return (

@@ -177,9 +177,9 @@ export const FeedCard = React.memo((props: FeedItem) => {
   }, [limitedEmbeds, width]);
 
   return (
-    <Card padding="$4" paddingTop="$2" margin="$2" marginTop="$0" marginLeft="$0" style={{ overflow: 'hidden', width: width - 40 }}>
+    <Card padding="$3" paddingTop="$2" paddingBottom="$2.5" margin="$2" marginTop="$0" marginLeft="$0" style={{ overflow: 'hidden', width: width - 40 }}>
       <XStack alignItems="flex-start" space="$2" width="100%">
-        <Image width={30} height={30} borderRadius={20} src={author.pfp_url} />
+        <Image width={46} height={46} borderRadius={40} src={author.pfp_url} />
         <YStack flex={1} space="$2" paddingTop="$0" width="100%">
           <XStack alignItems="center" space="$1" flexWrap="wrap" width="100%" flexShrink={1}>
             <Paragraph
@@ -231,31 +231,33 @@ export const FeedCard = React.memo((props: FeedItem) => {
           <YStack space="$2" width="100%">
             {renderEmbeds}
           </YStack>
-          <XStack ai="flex-start" jc="flex-start" space="$5" mt="$2">
-            <MessageCircle color="$color10" size={18} />
-            <Repeat color="$color10" size={18} />
-            <Heart color="$color10" size={18} />
-          </XStack>
-          <XStack ai="center" jc="flex-start" space="$2.5" mt="$2">
-            {(() => {
-              const counts = [
-                { label: replies.count > 1 ? 'replies' : 'reply', count: replies.count },
-                { label: reactions.recasts_count > 1 ? 'recasts' : 'recast', count: reactions.recasts_count },
-                { label: reactions.likes_count > 1 ? 'likes' : 'like', count: reactions.likes_count },
-              ]
-                .filter((item) => item.count > 0)
-                .sort((a, b) => b.count - a.count)
-                .slice(0, 2)
+          <YStack space="$0" ai="flex-start" jc="flex-start">
+            <XStack ai="flex-start" jc="flex-start" space="$5" mt="$2">
+              <MessageCircle color="$color10" size={18} />
+              <Repeat color="$color10" size={18} />
+              <Heart color="$color10" size={18} />
+            </XStack>
+            <XStack ai="center" jc="flex-start" space="$2.5">
+              {(() => {
+                const counts = [
+                  { label: replies.count > 1 ? 'replies' : 'reply', count: replies.count },
+                  { label: reactions.recasts_count > 1 ? 'recasts' : 'recast', count: reactions.recasts_count },
+                  { label: reactions.likes_count > 1 ? 'likes' : 'like', count: reactions.likes_count },
+                ]
+                  .filter((item) => item.count > 0)
+                  .sort((a, b) => b.count - a.count)
+                  .slice(0, 2)
 
-              return counts.map((item, index) => (
-                <XStack key={index} ai="center">
-                  <Paragraph fontWeight="bold">{item.count}</Paragraph>
-                  <Paragraph pl="$1.5">{item.label}</Paragraph>
-                  {index === 0 && counts.length > 1 && <Paragraph ml={index !== 0 ? '0' : '$2.5'}>·</Paragraph>}
-                </XStack>
-              ))
-            })()}
-          </XStack>
+                return counts.map((item, index) => (
+                  <XStack key={index} ai="center" opacity={0.7}>
+                    <Paragraph fontWeight="bold">{item.count}</Paragraph>
+                    <Paragraph pl="$1.5">{item.label}</Paragraph>
+                    {index === 0 && counts.length > 1 && <Paragraph ml={index !== 0 ? '0' : '$2.5'}>·</Paragraph>}
+                  </XStack>
+                ))
+              })()}
+            </XStack>
+          </YStack>
         </YStack>
       </XStack>
     </Card>

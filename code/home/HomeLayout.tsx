@@ -15,43 +15,49 @@ import { type Href, Link, Slot, usePathname } from 'one'
 import { Logo } from '../brand/Logo'
 import { useToggleTheme } from '../theme/ToggleThemeButton'
 import { HomeIcons } from './HomeIcons'
+import LandingPage from '../auth/LandingPage'
 
 const Context = createStyledContext({
   isVertical: false,
 })
 
 export function HomeLayout() {
+  const loggedIn = false
   const media = useMedia()
-  const pathname = usePathname();
+  const pathname = usePathname()
   const renderPageName = () => {
     const pages = [
       {
         path: '/',
-        name: 'Home'
+        name: 'Home',
       },
       {
         path: '/search',
-        name: 'Search'
+        name: 'Search',
       },
       {
         path: '/notifications',
-        name: 'Notifications'
+        name: 'Notifications',
       },
       {
         path: '/profile',
-        name: 'Profile'
-      }
-    ];
-  
-    const currentPage = pages.find(page => page.path === pathname);
-    
-    return currentPage ? currentPage.name : 'Page Not Found';
-  };
-  const name = renderPageName();
+        name: 'Profile',
+      },
+    ]
+
+    const currentPage = pages.find((page) => page.path === pathname)
+
+    return currentPage ? currentPage.name : 'Page Not Found'
+  }
+  const name = renderPageName()
+
+  if (!loggedIn) {
+    return <LandingPage />
+  }
 
   return (
     <Context.Provider isVertical={isTouchable}>
-      {isTouchable || media.sm ? <HomeLayoutTouch name={name}  /> : <HomeLayoutMouse name={name} />}
+      {isTouchable || media.sm ? <HomeLayoutTouch name={name} /> : <HomeLayoutMouse name={name} />}
     </Context.Provider>
   )
 }
@@ -94,8 +100,8 @@ function HomeLayoutTouch({ name }: { name: string }) {
 }
 
 function HomeLayoutMouse({ name }: { name: string }) {
-  const [activePill, setActivePill] = useState('Priority');
-  const pillNames = ['Priority', 'Channels', 'Mentions', 'Likes', 'Follows', 'Other'];
+  const [activePill, setActivePill] = useState('Priority')
+  const pillNames = ['Priority', 'Channels', 'Mentions', 'Likes', 'Follows', 'Other']
   return (
     <XStack f={1} mah="100vh">
       <YStack
@@ -123,43 +129,40 @@ function HomeLayoutMouse({ name }: { name: string }) {
       <YStack f={7} maw="100%" $sm={{ f: 1 }}>
         <ScrollView>
           <YStack bbc="$borderColor" bbw={1} brw={1} brc="$borderColor" maxWidth="60%" display="flex" flexDirection="column" gap="$2" alignItems="flex-start">
-            <XStack ai="center" jc="space-between" px="$4" mt="$3" mb={name === "Notifications" ? "$1.5" : "$3"}>
+            <XStack ai="center" jc="space-between" px="$4" mt="$3" mb={name === 'Notifications' ? '$1.5' : '$3'}>
               <Paragraph fontSize={20} fontWeight={600} flex={1}>
                 {name}
               </Paragraph>
             </XStack>
-            {name === "Notifications" ? 
-            <XStack ai="center" jc="flex-start" gap="$2" px="$3" py="$2" mb="$1.5">
-              {pillNames.map((pill) => (
-                <YStack
-                  key={pill}
-                  px="$3"
-                  py="$1.5"
-                  br={50}
-                  borderColor="$borderColor"
-                  borderWidth={1}
-                  onPress={() => setActivePill(pill)}
-                  cursor="pointer"
-                  backgroundColor={pill === activePill ? '$color9' : 'transparent'}
-                >
-                  <Paragraph
-                    fontSize={16}
-                    fontWeight={pill === activePill ? 700 : 500}
-                    color={pill === activePill ? 'white' : '$textColor'}
+            {name === 'Notifications' ? (
+              <XStack ai="center" jc="flex-start" gap="$2" px="$3" py="$2" mb="$1.5">
+                {pillNames.map((pill) => (
+                  <YStack
+                    key={pill}
+                    px="$3"
+                    py="$1.5"
+                    br={50}
+                    borderColor="$borderColor"
+                    borderWidth={1}
+                    onPress={() => setActivePill(pill)}
+                    cursor="pointer"
+                    backgroundColor={pill === activePill ? '$color9' : 'transparent'}
                   >
-                    {pill}
-                  </Paragraph>
-                </YStack>
-              ))}
-            </XStack>
-            : <></>
-            }
+                    <Paragraph fontSize={16} fontWeight={pill === activePill ? 700 : 500} color={pill === activePill ? 'white' : '$textColor'}>
+                      {pill}
+                    </Paragraph>
+                  </YStack>
+                ))}
+              </XStack>
+            ) : (
+              <></>
+            )}
           </YStack>
           <Slot />
         </ScrollView>
       </YStack>
     </XStack>
-  );
+  )
 }
 
 function NavLinks() {

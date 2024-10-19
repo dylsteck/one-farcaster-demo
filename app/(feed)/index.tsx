@@ -34,7 +34,7 @@ function FeedPage() {
       <PageContainer
         padding={0}
         margin={0}
-        maxWidth="60%"
+        maxWidth="70%"
         borderRightWidth={1}
         borderRightColor="$borderColor"
         $sm={{

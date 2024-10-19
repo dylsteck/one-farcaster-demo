@@ -10,68 +10,33 @@ import {
   YStack,
   useMedia,
   Paragraph,
+  SizableText,
+  Input,
+  useTheme,
 } from 'tamagui'
 import { type Href, Link, Slot, usePathname } from 'one'
 import { Logo } from '../brand/Logo'
 import { useToggleTheme } from '../theme/ToggleThemeButton'
 import { HomeIcons } from './HomeIcons'
-import LandingPage from '../auth/LandingPage'
 
 const Context = createStyledContext({
   isVertical: false,
 })
 
 export function HomeLayout() {
-  const loggedIn = false
   const media = useMedia()
   const pathname = usePathname()
-  const renderPageName = () => {
-    const pages = [
-      {
-        path: '/',
-        name: 'Home',
-      },
-      {
-        path: '/search',
-        name: 'Search',
-      },
-      {
-        path: '/notifications',
-        name: 'Notifications',
-      },
-      {
-        path: '/profile',
-        name: 'Profile',
-      },
-    ]
-
-    const currentPage = pages.find((page) => page.path === pathname)
-
-    return currentPage ? currentPage.name : 'Page Not Found'
-  }
-  const name = renderPageName()
-
-  if (!loggedIn) {
-    return <LandingPage />
-  }
 
   return (
     <Context.Provider isVertical={isTouchable}>
-      {isTouchable || media.sm ? <HomeLayoutTouch name={name} /> : <HomeLayoutMouse name={name} />}
+      {isTouchable || media.sm ? <HomeLayoutTouch /> : <HomeLayoutMouse />}
     </Context.Provider>
   )
 }
 
-function HomeLayoutTouch({ name }: { name: string }) {
+function HomeLayoutTouch() {
   return (
     <YStack f={1}>
-      <XStack ai="center" jc="space-between" px="$4" bbc="$borderColor" bbw={1}>
-        <Paragraph fontSize={20} fontWeight={600}>
-          {name}
-        </Paragraph>
-        <ToggleThemeLink f={0} />
-      </XStack>
-
       <YStack f={1}>
         <ScrollView>
           <Slot />
@@ -90,7 +55,6 @@ function HomeLayoutTouch({ name }: { name: string }) {
         left={0}
         right={0}
         zIndex={1}
-        backgroundColor="$background"
         px="$4"
       >
         <NavLinks />
@@ -99,69 +63,61 @@ function HomeLayoutTouch({ name }: { name: string }) {
   )
 }
 
-function HomeLayoutMouse({ name }: { name: string }) {
-  const [activePill, setActivePill] = useState('Priority')
-  const pillNames = ['Priority', 'Channels', 'Mentions', 'Likes', 'Follows', 'Other']
-  return (
-    <XStack f={1} mah="100vh">
-      <YStack
-        ai="flex-start"
-        brw={1}
-        brc="$borderColor"
-        pl="$12"
-        pr="$3"
-        py="$0"
-        gap="$1"
-        $sm={{
-          display: 'none',
-        }}
-      >
-        <YStack>
-          <Logo />
-          <NavLinks />
-        </YStack>
-        <View flex={1} />
-        <YStack ai="flex-start">
-          <ToggleThemeLink f={0} />
-        </YStack>
-      </YStack>
+function HomeLayoutMouse() {
+  const theme = useTheme()
 
-      <YStack f={7} maw="100%" $sm={{ f: 1 }}>
-        <ScrollView>
-          <YStack bbc="$borderColor" bbw={1} brw={1} brc="$borderColor" maxWidth="60%" display="flex" flexDirection="column" gap="$2" alignItems="flex-start">
-            <XStack ai="center" jc="space-between" px="$4" mt="$3" mb={name === 'Notifications' ? '$1.5' : '$3'}>
-              <Paragraph fontSize={20} fontWeight={600} flex={1}>
-                {name}
-              </Paragraph>
-            </XStack>
-            {name === 'Notifications' ? (
-              <XStack ai="center" jc="flex-start" gap="$2" px="$3" py="$2" mb="$1.5">
-                {pillNames.map((pill) => (
-                  <YStack
-                    key={pill}
-                    px="$3"
-                    py="$1.5"
-                    br={50}
-                    borderColor="$borderColor"
-                    borderWidth={1}
-                    onPress={() => setActivePill(pill)}
-                    cursor="pointer"
-                    backgroundColor={pill === activePill ? '$color9' : 'transparent'}
-                  >
-                    <Paragraph fontSize={16} fontWeight={pill === activePill ? 700 : 500} color={pill === activePill ? 'white' : '$textColor'}>
-                      {pill}
-                    </Paragraph>
-                  </YStack>
-                ))}
-              </XStack>
-            ) : (
-              <></>
-            )}
-          </YStack>
-          <Slot />
-        </ScrollView>
-      </YStack>
-    </XStack>
+  return (
+    <YStack f={1} mah="100vh">
+      <XStack
+        ai="center"
+        jc="space-between"
+        borderBottomWidth={1}
+        borderBottomColor={theme.white075}
+        pl="$4"
+        pr="$4"
+        py="$2"
+        zIndex={2}
+      >
+        <XStack alignItems="center" space="$2">
+          <Logo />
+          <Paragraph fontSize="$6" opacity="0.7" fontWeight={400}>
+            Cortex
+          </Paragraph>
+          <SearchBar />
+        </XStack>
+      </XStack>
+
+      <XStack f={1}>
+        <YStack
+          ai="flex-start"
+          brw={1}
+          brc={theme.white075}
+          pl="$12"
+          pr="$3"
+          py="$0"
+          gap="$1"
+          borderRightWidth={1}
+          borderRightColor={theme.white075}
+          $sm={{
+            display: 'none',
+          }}
+        >
+          <NavLinks />
+          <View flex={1} />
+        </YStack>
+
+        <YStack f={7} maw="100%" $sm={{ f: 1 }}>
+          <ScrollView
+            borderLeftWidth={1}
+            borderLeftColor={theme.borderColor}
+          >
+            <YStack mt="$2">
+              <Slot />
+            </YStack>
+          </ScrollView>
+        </YStack>
+      </XStack>
+    </YStack>
   )
 }
 
@@ -170,9 +126,25 @@ function NavLinks() {
     <>
       <SideMenuLink href="/" subPaths={['/post/']} Icon={HomeIcons.Home} />
       <SideMenuLink href="/search" Icon={HomeIcons.Search} />
-      <SideMenuLink href="/notifications" Icon={HomeIcons.Notifications} />
-      <SideMenuLink href="/profile" Icon={HomeIcons.User} />
+      {/* <SideMenuLink href="/profile" Icon={HomeIcons.User} /> */}
     </>
+  )
+}
+
+function SearchBar() {
+  return (
+    <XStack w="100%" maxWidth={400} marginLeft="$4">
+      <Input
+        placeholder="Search Farcaster"
+        w="100%"
+        size="$4"
+        borderWidth={1}
+        borderColor="$color7"
+        borderRadius="$10"
+        px="$4"
+        py="$1"
+      />
+    </XStack>
   )
 }
 
@@ -198,12 +170,10 @@ const SideMenuLink = ({
   href,
   subPaths,
   Icon,
-  children,
 }: {
   subPaths?: string[]
   href: Href
   Icon: (typeof HomeIcons)['Home']
-  children: ReactNode
 }) => {
   const pathname = usePathname()
   const isActive = pathname === href || subPaths?.some((p) => pathname.startsWith(p))

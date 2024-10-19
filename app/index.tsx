@@ -29,7 +29,7 @@ function FeedPage() {
     <>
       <Stack.Screen
         options={{
-          title: "Feed",
+          title: "Home",
         }}
       />
       <PageContainer

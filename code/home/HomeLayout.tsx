@@ -17,6 +17,7 @@ import { type Href, Link, Slot, usePathname } from 'one'
 import { Logo } from '../brand/Logo'
 import { useToggleTheme } from '../theme/ToggleThemeButton'
 import { HomeIcons } from './HomeIcons'
+import { Image } from '../ui/Image'
 
 const Context = createStyledContext({
   isVertical: false,
@@ -36,8 +37,29 @@ export function HomeLayout() {
 function HomeLayoutTouch() {
   return (
     <YStack f={1}>
-      <YStack f={1}>
-        <ScrollView>
+      <XStack
+        position="fixed"
+        ai="center"
+        jc="space-between"
+        width="100%"
+        backgroundColor="#222121"
+        borderBottomWidth={1}
+        borderBottomColor={"$white"}
+        pl="$4"
+        pr="$4"
+        py="$2"
+        zIndex={2}
+      >
+        <XStack alignItems="center" space="$2">
+          <Logo />
+          <Paragraph fontSize="$6" opacity="0.7" fontWeight={400}>
+            Cortex
+          </Paragraph>
+          <SearchBar />
+        </XStack>
+      </XStack>
+      <YStack f={1} pt="$7">
+        <ScrollView pt="$5" pb="$6">
           <Slot />
         </ScrollView>
       </YStack>
@@ -47,7 +69,7 @@ function HomeLayoutTouch() {
         jc="space-between"
         btw={1}
         btc="$borderColor"
-        py="$1"
+        py="$2"
         gap="$1"
         position="fixed"
         bottom={0}
@@ -84,6 +106,12 @@ function HomeLayoutMouse() {
             Cortex
           </Paragraph>
           <SearchBar />
+        </XStack>
+        {/* <Image src="" width={30} height={30} borderRadius={20} /> */}
+        <XStack backgroundColor="$black050" borderRadius="$10" px="$4" py="$1" borderColor="$white" borderWidth={1}>
+          <Paragraph fontWeight={400}>
+            Login
+          </Paragraph>
         </XStack>
       </XStack>
 
@@ -122,7 +150,7 @@ function HomeLayoutMouse() {
 function NavLinks() {
   return (
     <>
-      <SideMenuLink href="/" subPaths={['/post/']} Icon={HomeIcons.Home} text="Home" />
+      <SideMenuLink href="/" Icon={HomeIcons.Home} text="Home" />
       <SideMenuLink href="/trending" Icon={HomeIcons.Trending} text="Trending" />
       <SideMenuLink href="/explore" Icon={HomeIcons.Explore} text="Explore" />
     </>

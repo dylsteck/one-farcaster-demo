@@ -21,13 +21,13 @@ export function HomeLayout() {
         }}
       />
 
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="notifications"
         options={{
           title: 'Notifications',
           tabBarIcon: ({ color }) => <HomeIcons.Notifications size={20} color={color} />,
         }}
-      />
+      /> */}
 
       <Tabs.Screen
         name="profile"

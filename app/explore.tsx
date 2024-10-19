@@ -1,4 +1,5 @@
 import { Paragraph } from 'tamagui'
+import Frame from '~/code/frames/Frames'
 import { PageContainer } from '~/code/ui/PageContainer'
 
 export default function ExplorePage() {
@@ -8,6 +9,7 @@ export default function ExplorePage() {
         <Paragraph size="$8" pt="$2">
             Explore Farcaster
         </Paragraph>
+        <Frame />
     </PageContainer>
   )
 }

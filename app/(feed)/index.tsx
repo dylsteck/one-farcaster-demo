@@ -40,6 +40,7 @@ function FeedPage() {
         borderRightColor="$white"
         $md={{
           maxWidth: "100%",
+          borderRightWidth: 0,
         }}
       >
         <InfiniteFeed

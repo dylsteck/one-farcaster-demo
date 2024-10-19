@@ -55,6 +55,7 @@ function HomeLayoutTouch() {
         right={0}
         zIndex={1}
         px="$4"
+        backgroundColor= "#222121"
       >
         <NavLinks />
       </XStack>
@@ -95,8 +96,6 @@ function HomeLayoutMouse() {
           pr="$3"
           py="$0"
           gap="$1"
-          borderRightWidth={1}
-          borderRightColor={theme.white075}
           $md={{
             display: 'none',
           }}

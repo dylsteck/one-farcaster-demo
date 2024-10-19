@@ -177,7 +177,7 @@ export const FeedCard = React.memo((props: FeedItem) => {
   }, [limitedEmbeds, width]);
 
   return (
-    <Card padding="$3" paddingTop="$2" paddingBottom="$2.5" margin="$2" marginTop="$0" marginLeft="$0" style={{ overflow: 'hidden', width: width - 40 }}>
+    <Card padding="$3" paddingTop="$2" paddingBottom="$2.5" margin="$2" marginTop="$1" marginLeft="$0" style={{ overflow: 'hidden', width: width - 40 }}>
       <XStack alignItems="flex-start" space="$2" width="100%">
         <Image width={46} height={46} borderRadius={40} src={author.pfp_url} />
         <YStack flex={1} space="$2" paddingTop="$0" width="100%">
@@ -220,9 +220,9 @@ export const FeedCard = React.memo((props: FeedItem) => {
           </XStack>
           <Paragraph
             size="$4"
-            width="90%"
-            $gtSm={{
-              width: '40%',
+            width="100%"
+            $gtMd={{
+              width: '60%',
             }}
             style={{ flexShrink: 1, whiteSpace: 'pre-wrap', wordWrap: 'break-word', overflow: 'hidden' }}
           >

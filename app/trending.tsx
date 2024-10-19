@@ -1,6 +1,6 @@
 import { PageContainer } from '~/code/ui/PageContainer'
 
-export default function ProfilePage() {
+export default function TrendingPage() {
 
   return (
     <PageContainer>

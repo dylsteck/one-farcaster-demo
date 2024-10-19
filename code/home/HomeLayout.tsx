@@ -1,11 +1,10 @@
-import { type ReactNode, useState } from 'react'
+import { type ReactNode } from 'react'
 import {
   createStyledContext,
   isTouchable,
   ScrollView,
   styled,
   View,
-  type ViewProps,
   XStack,
   YStack,
   useMedia,
@@ -92,13 +91,13 @@ function HomeLayoutMouse() {
           ai="flex-start"
           brw={1}
           brc={theme.white075}
-          pl="$12"
+          pl="$6"
           pr="$3"
           py="$0"
           gap="$1"
           borderRightWidth={1}
           borderRightColor={theme.white075}
-          $sm={{
+          $md={{
             display: 'none',
           }}
         >
@@ -111,7 +110,7 @@ function HomeLayoutMouse() {
             borderLeftWidth={1}
             borderLeftColor={theme.borderColor}
           >
-            <YStack mt="$2">
+            <YStack>
               <Slot />
             </YStack>
           </ScrollView>
@@ -124,9 +123,9 @@ function HomeLayoutMouse() {
 function NavLinks() {
   return (
     <>
-      <SideMenuLink href="/" subPaths={['/post/']} Icon={HomeIcons.Home} />
-      <SideMenuLink href="/search" Icon={HomeIcons.Search} />
-      {/* <SideMenuLink href="/profile" Icon={HomeIcons.User} /> */}
+      <SideMenuLink href="/" subPaths={['/post/']} Icon={HomeIcons.Home} text="Home" />
+      <SideMenuLink href="/trending" Icon={HomeIcons.Trending} text="Trending" />
+      <SideMenuLink href="/explore" Icon={HomeIcons.Explore} text="Explore" />
     </>
   )
 }
@@ -137,10 +136,10 @@ function SearchBar() {
       <Input
         placeholder="Search Farcaster"
         w="100%"
-        size="$4"
+        size="$3"
         borderWidth={1}
-        borderColor="$color7"
-        borderRadius="$10"
+        borderColor="$white075"
+        borderRadius="$15"
         px="$4"
         py="$1"
       />
@@ -152,10 +151,11 @@ const IconFrame = styled(View, {
   $gtXs: {
     scale: 0.8,
     m: -5,
+    pl: "$2"
   },
 })
 
-const ToggleThemeLink = (props: ViewProps) => {
+const ToggleThemeLink = (props) => {
   const { onPress, Icon } = useToggleTheme()
   return (
     <LinkContainer {...props} onPress={onPress}>
@@ -170,10 +170,12 @@ const SideMenuLink = ({
   href,
   subPaths,
   Icon,
+  text,
 }: {
   subPaths?: string[]
   href: Href
   Icon: (typeof HomeIcons)['Home']
+  text: string
 }) => {
   const pathname = usePathname()
   const isActive = pathname === href || subPaths?.some((p) => pathname.startsWith(p))
@@ -184,10 +186,29 @@ const SideMenuLink = ({
         <IconFrame>
           <Icon size={28} />
         </IconFrame>
+        <LinkText>{text}</LinkText>
       </LinkContainer>
     </Link>
   )
 }
+
+const LinkText = styled(SizableText, {
+  context: Context,
+  userSelect: 'none',
+  dsp: 'flex',
+  f: 10,
+  size: '$5',
+  cur: 'pointer',
+  $xs: {
+    display: 'none',
+  },
+
+  variants: {
+    isVertical: {
+      true: {},
+    },
+  } as const,
+})
 
 const LinkContainer = styled(XStack, {
   context: Context,
@@ -195,6 +216,7 @@ const LinkContainer = styled(XStack, {
   className: 'text-decoration-none',
   gap: '$4',
   br: '$6',
+  mt: '$2',
   cur: 'pointer',
   ai: 'center',
   hoverStyle: {
@@ -220,11 +242,11 @@ const LinkContainer = styled(XStack, {
       },
       false: {
         w: '100%',
-        px: '$3.5',
-        py: '$3.5',
+        px: '$2',
+        py: '$2',
 
         $xs: {
-          p: 0,
+          p: '$2',
           w: '$6',
           h: '$6',
           ai: 'center',

@@ -4,6 +4,7 @@ import { InfiniteFeed } from "~/code/ui/InfiniteFeed";
 import { PageContainer } from "~/code/ui/PageContainer";
 import { useFeed } from "~/code/feed/useFeed";
 import { FeedCard } from "~/code/feed/FeedCard";
+import { Paragraph, XStack } from "tamagui";
 
 export default () => <FeedPage />;
 
@@ -36,8 +37,8 @@ function FeedPage() {
         margin={0}
         maxWidth="70%"
         borderRightWidth={1}
-        borderRightColor="$borderColor"
-        $sm={{
+        borderRightColor="$white"
+        $md={{
           maxWidth: "100%",
         }}
       >

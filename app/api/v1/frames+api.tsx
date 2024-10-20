@@ -1,5 +1,6 @@
 import { type FrameActionPayload, type SupportedParsingSpecification } from "frames.js";
 import { getFrame } from "frames.js";
+import { setupCors } from "~/code/api/cors";
 
 function isSpecificationValid(
     specification: unknown
@@ -12,6 +13,7 @@ function isSpecificationValid(
 
 /** Proxies fetching a frame through a backend to avoid CORS issues and preserve user IP privacy */
 export async function GET(request: Request): Promise<Response> {
+  setupCors(request);
   const searchParams = new URL(request.url).searchParams;
   const url = searchParams.get("url");
   const specification = searchParams.get("specification") ?? "farcaster";
@@ -33,12 +35,13 @@ export async function GET(request: Request): Promise<Response> {
     return new Response(JSON.stringify(result));
   } catch (err) {
     console.error(err);
-    return new Response(JSON.stringify({ message: err.message }), { status: 500 });
+    return new Response(JSON.stringify({ message: (err as Error).message }), { status: 500 });
   }
 }
 
 /** Proxies frame actions to avoid CORS issues and preserve user IP privacy */
 export async function POST(req: Request): Promise<Response> {
+  setupCors(req);
   const searchParams = new URL(req.url).searchParams;
   const body = (await req.json()) as FrameActionPayload;
   const isPostRedirect = searchParams.get("postType") === "post_redirect";

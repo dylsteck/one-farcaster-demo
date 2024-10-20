@@ -1,6 +1,8 @@
+import { setupCors } from "~/code/api/cors";
 import neynarClient from "~/code/services/neynar";
 
 export async function POST(request: Request) {
+  setupCors(request);
   const body = await request.json();
 
   const signerUuid = body.signerUuid ?? undefined;

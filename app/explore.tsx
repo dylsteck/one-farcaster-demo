@@ -1,4 +1,4 @@
-import { Paragraph } from 'tamagui'
+import { Paragraph, XStack } from 'tamagui'
 import Frame from '~/code/frames/Frames'
 import { PageContainer } from '~/code/ui/PageContainer'
 
@@ -9,7 +9,17 @@ export default function ExplorePage() {
         <Paragraph size="$8" pt="$2">
             Explore Farcaster
         </Paragraph>
-        <Frame />
+        <XStack gap="$4" marginTop="$3">
+            <Frame url="https://fctrivia.xyz" />
+            <Frame url="https://fctrivia.xyz" />
+            <Frame url="https://fctrivia.xyz" />
+        </XStack>
+        <Paragraph size="$8" pt="$2">
+            Top Apps
+        </Paragraph>
+        <Paragraph size="$8" pt="$2">
+            Top Channels
+        </Paragraph>
     </PageContainer>
   )
 }

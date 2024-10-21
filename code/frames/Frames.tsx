@@ -10,45 +10,102 @@ import {
     type FrameUITheme,
   } from "@frames.js/render/ui";
   import type { ImageStyle, TextStyle, ViewStyle } from "react-native";
-  import { View } from "tamagui";
-import { PROD_URL } from "../api/utils";
-
+  import { View, Button, Text, Image, Spinner, XStack } from "tamagui";
+  import { useEffect, useState } from "react";
+  import { PROD_URL } from "../api/utils";
   
-  /**
-   * StylingProps is a type that defines the props that can be passed to the components to style them.
-   */
   type StylingProps = {
     style?: ImageStyle | TextStyle | ViewStyle;
   };
   
-  /**
-   * You can override components to change their internal logic or structure if you want.
-   * By default it is not necessary to do that since the default structure is already there
-   * so you can just pass an empty object and use theme to style the components.
-   *
-   * You can also style components here and completely ignore theme if you wish.
-   */
   const components: FrameUIComponents<StylingProps> = {
     ImageContainer(props, stylingProps) {
       return (
         <View
+          width={350}
+          height={350}
           style={{
-            // helps loading screen to stretch and also provides a minimal space when frame is loading
-            aspectRatio: typeof props.aspectRatio === "string" || props.aspectRatio === "auto"
-              ? props.aspectRatio
-              : props.aspectRatio ? props.aspectRatio : "1", // Default aspect ratio is set to 1 if invalid
+            aspectRatio:
+              typeof props.aspectRatio === "string" || props.aspectRatio === "auto"
+                ? props.aspectRatio
+                : props.aspectRatio
+                ? props.aspectRatio
+                : "1", 
+            ...stylingProps.style,
           }}
         >
-          {props.image}
-          {props.messageTooltip}
+          {props.image ? (
+            typeof props.image === "string" ? (
+              <Image
+                source={{ uri: props.image }} 
+                style={{ width: 300, height: 300 }} 
+                resizeMode="cover"
+                borderRadius={20} 
+              />
+            ) : (
+              props.image
+            )
+          ) : null}
+          {props.messageTooltip && (
+            <Text style={{ textAlign: "center", paddingTop: 10 }}>
+              {props.messageTooltip}
+            </Text>
+          )}
+        </View>
+      );
+    },
+    ButtonsContainer(props, stylingProps) {
+      return (
+        <XStack space alignItems="center" justifyContent="center" mt="$2">
+          {props.buttons.map((button, index) => (
+            <View key={index} style={{ marginHorizontal: 10 }}>
+              {button}
+            </View>
+          ))}
+        </XStack>
+      );
+    },
+    Button(props, stylingProps) {
+      return (
+        <Button
+          onPress={props.onPress}
+          style={{
+            backgroundColor: props.isDisabled ? "gray" : "blue",
+            padding: 10,
+            borderRadius: 5,
+            opacity: props.isDisabled ? 0.6 : 1,
+            ...stylingProps.style,
+          }}
+          disabled={props.isDisabled}
+        >
+          <Text style={{ color: "white", textAlign: "center" }}>
+            {props.frameButton.label || "Button"}
+          </Text>
+        </Button>
+      );
+    },
+    LoadingScreen(props) {
+      return (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "gray",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Spinner size="large" color="white" />
+          <Text style={{ color: "white", paddingTop: 10 }}>Loading...</Text>
         </View>
       );
     },
   };
   
-  /**
-   * By default there are no styles so it is up to you to style the components as you wish.
-   */
+
   const theme: FrameUITheme<StylingProps> = {
     Root: {
       style: {
@@ -64,11 +121,15 @@ import { PROD_URL } from "../api/utils";
         bottom: 0,
         backgroundColor: "gray",
         zIndex: 10,
+        justifyContent: "center",
+        alignItems: "center",
       } satisfies ViewStyle,
     },
   };
   
-  export default function Frame() {
+  export default function Frame({ url }:  { url: string }) {
+    const [loading, setLoading] = useState(true);
+  
     // @TODO: replace with your farcaster signer
     const farcasterSigner: FarcasterSigner = {
       fid: 1,
@@ -80,34 +141,42 @@ import { PROD_URL } from "../api/utils";
     };
   
     const frameState = useFrame({
-      // replace with frame URL
-      homeframeUrl: "https://framesjs.org",
-      // corresponds to the name of the route for POST and GET in step 2
+      homeframeUrl: url,
       frameActionProxy: `${PROD_URL}/api/v1/frames`,
       frameGetProxy: `${PROD_URL}/api/v1/frames`,
       connectedAddress: undefined,
       frameContext: fallbackFrameContext,
-      // map to your identity if you have one
       signerState: {
         hasSigner: farcasterSigner.status === "approved",
         signer: farcasterSigner,
         isLoadingSigner: false,
         async onSignerlessFramePress() {
-          // Only run if `hasSigner` is set to `false`
-          // This is a good place to throw an error or prompt the user to login
           console.log(
             "A frame button was pressed without a signer. Perhaps you want to prompt a login"
           );
         },
         signFrameAction,
         async logout() {
-          // here you can add your logout logic
           console.log("logout");
         },
       },
     });
   
+    useEffect(() => {
+      if (frameState && frameState.homeframeUrl) {
+        setLoading(false);
+      }
+    }, [frameState]);
+  
     return (
-      <FrameUI frameState={frameState} components={components} theme={theme} />
+      <View style={{ alignItems: 'flex-start' }}>
+        {!loading ? (
+          <FrameUI frameState={frameState as unknown as any} components={components} theme={theme} />
+        ) : (
+          components.LoadingScreen && (
+            <components.LoadingScreen frameState={frameState as unknown as any} dimensions={{ width: 350, height: 350 }} />
+          )
+        )}
+      </View>
     );
   }  

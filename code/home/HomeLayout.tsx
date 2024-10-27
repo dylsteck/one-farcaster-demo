@@ -53,7 +53,7 @@ function HomeLayoutTouch() {
         <XStack alignItems="center" space="$2">
           <Logo />
           <Paragraph fontSize="$6" opacity="0.7" fontWeight={400}>
-            Cortex
+            Tap
           </Paragraph>
           <SearchBar />
         </XStack>
@@ -103,7 +103,7 @@ function HomeLayoutMouse() {
         <XStack alignItems="center" space="$2">
           <Logo />
           <Paragraph fontSize="$6" opacity="0.7" fontWeight={400}>
-            Cortex
+            Tap
           </Paragraph>
           <SearchBar />
         </XStack>

@@ -3,7 +3,7 @@ import { setCurrentRequestHeaders } from "one/headers";
 function isValidOrigin(origin?: string | null): origin is string {
     return (
       typeof origin === 'string' &&
-      (origin === 'cortex-web.up.railway.app' ||
+      (origin === 'tap.up.railway.app' ||
         origin.endsWith('.railway.app') ||
         origin === 'http://localhost:8081' || 
         origin === 'http://127.0.0.1:8081')

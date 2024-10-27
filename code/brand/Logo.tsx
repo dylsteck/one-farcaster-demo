@@ -7,5 +7,6 @@ const LogoImage = styled(Image, {
 })
 
 export function Logo() {
-  return <LogoImage src={appIcon} />
+  // return <LogoImage src={appIcon} />
+  return <></>
 }

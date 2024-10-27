@@ -1,6 +1,6 @@
-# Cortex
+# Tap
 
-Cortex is a community-first Farcaster client built on the cross-platform [One](https://onestack.dev/) framework for React
+Tap is a community-first Farcaster client built on the cross-platform [One](https://onestack.dev/) framework for React
 
 ## Setup
 
@@ -27,6 +27,7 @@ yarn db:init
 ## Developing
 
 You can now run your One app in development:
+(note: you can also use another package manager such as bun or npm if you'd rather)
 
 ```bash
 yarn dev

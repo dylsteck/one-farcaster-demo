@@ -1,6 +1,6 @@
-# Tap
+# one-farcaster-demo
 
-Tap is a community-first Farcaster client built on the cross-platform [One](https://onestack.dev/) framework for React
+one-farcaster-demo is a demo Farcaster app I was building to test out the [One](https://onestack.dev/) framework for React
 
 ## Setup
 

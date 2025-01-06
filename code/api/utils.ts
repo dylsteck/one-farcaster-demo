@@ -1,1 +1,1 @@
-export const PROD_URL = "https://tap.up.railway.app";
+export const PROD_URL = "";
